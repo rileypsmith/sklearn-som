@@ -31,3 +31,6 @@ Now also like in sklearn, let's assign each datapoint to a predicted cluster usi
 predictions = iris_som.predict(iris_data)
 ```
 And let's take a look at how we did:
+![Iris Data Results](https://github.com/rileypsmith/sklearn-som/blob/main/example/iris_example.png)
+
+Not bad! For the full example code, including the code to reproduce that plot, see `example/example.py`.
