@@ -32,7 +32,7 @@ som.fit(iris_data)
 predictions = som.predict(iris_data)
 
 # Plot the results
-fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(5,10))
+fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(5,7))
 x = iris_data[:,0]
 y = iris_data[:,1]
 colors = ['red', 'green', 'blue']
