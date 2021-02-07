@@ -1,2 +1,4 @@
 */__pycache__
 sklearn_som.egg-info
+build/*
+dist/*

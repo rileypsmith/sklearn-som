@@ -10,9 +10,28 @@ import numpy as np
 
 class SOM():
     """
-    An implementation of a self organizing map using numpy.
+    The 2-D, rectangular grid self-organizing map class using Numpy.
     """
-    def __init__(self, m=3, n=3, dim=3, lr=1, sigma=1, max_iter=3000, **kwargs):
+    def __init__(self, m=3, n=3, dim=3, lr=1, sigma=1, max_iter=3000):
+        """
+        Parameters
+        ----------
+        m : int, default=3
+            The shape along dimension 0 (vertical) of the SOM.
+        n : int, default=3
+            The shape along dimesnion 1 (horizontal) of the SOM.
+        dim : int, default=3
+            The dimensionality (number of features) of the input space.
+        lr : float, default=1
+            The initial step size for updating the SOM weights.
+        sigma : float, optional
+            Optional parameter for magnitude of change to each weight. Does not
+            update over training (as does learning rate). Higher values mean
+            more aggressive updates to weights.
+        max_iter : int, optional
+            Optional parameter to stop training if you reach this many
+            interation.
+        """
         # Initialize descriptive features of SOM
         self.m = m
         self.n = n
@@ -90,10 +109,26 @@ class SOM():
         # Compute sum of squared distance (just euclidean distance) from x to bmu
         return np.sum(np.square(x - bmu))
 
-    def fit(self, data, epochs=1, shuffle=True):
+    def fit(self, X, epochs=1, shuffle=True):
         """
         Take data (a tensor of type float64) as input and fit the SOM to that
         data for the specified number of epochs.
+
+        Parameters
+        ----------
+        X : ndarray
+            Training data. Must have shape (n, self.dim) where n is the number
+            of training samples.
+        epochs : int, default=1
+            The number of times to loop through the training data when fitting.
+        shuffle : bool, default True
+            Whether or not to randomize the order of train data when fitting.
+            Can be seeded with np.random.seed() prior to calling fit.
+
+        Returns
+        -------
+        None
+            Fits the SOM to the given data but does not return anything.
         """
         # Count total number of iterations
         global_iter_counter = 0
@@ -136,8 +171,19 @@ class SOM():
 
     def predict(self, X):
         """
-        For each line in x, predict the cluster center that is closest to it
-        (return that cluster center's index).
+        Predict cluster for each element in X.
+
+        Parameters
+        ----------
+        X : ndarray
+            An ndarray of shape (n, self.dim) where n is the number of samples.
+            The data to predict clusters for.
+
+        Returns
+        -------
+        labels : ndarray
+            An ndarray of shape (n,). The predicted cluster index for each item
+            in X.
         """
         # Check to make sure SOM has been fit
         if not self._trained:
@@ -154,12 +200,17 @@ class SOM():
         """
         Transform the data X into cluster distance space.
 
-        Args:
-        --X: <ndarray> Data of shape (num_samples, self.dim)
+        Parameters
+        ----------
+        X : ndarray
+            Data of shape (n, self.dim) where n is the number of samples. The
+            data to transform.
 
-        Returns:
-        Ndarray of size (num_samples, n_clusters) (the distance to each cluster
-        center from each sample).
+        Returns
+        -------
+        transformed : ndarray
+            Transformed data of shape (n, self.n*self.m). The Euclidean distance
+            from each item in X to each cluster center.
         """
         # Stack data and cluster centers
         X_stack = np.stack([X]*(self.m*self.n), axis=1)
@@ -175,12 +226,18 @@ class SOM():
         """
         Convenience method for calling fit(X) followed by predict(X).
 
-        Args:
-        --X: <ndarray> Data of shape (num_samples, self.dim)
-        --**kwargs: Keyword arguments for the .fit() method
+        Parameters
+        ----------
+        X : ndarray
+            Data of shape (n, self.dim). The data to fit and then predict.
+        **kwargs
+            Optional keyword arguments for the .fit() method.
 
-        Returns:
-        Index of predicted cluster for each element in X.
+        Returns
+        -------
+        labels : ndarray
+            ndarray of shape (n,). The index of the predicted cluster for each
+            item in X (after fitting the SOM to the data in X).
         """
         # Fit to data
         self.fit(X, **kwargs)
@@ -194,13 +251,18 @@ class SOM():
         in sklearn, this is not implemented more efficiently (the efficiency is
         the same as calling fit(X) directly followed by transform(X)).
 
-        Args:
-        --X: <ndarray> Data of shape (num_samples, self.dim)
-        --**kwargs: Keyword arguments for the .fit() method
+        Parameters
+        ----------
+        X : ndarray
+            Data of shape (n, self.dim) where n is the number of samples.
+        **kwargs
+            Optional keyword arguments for the .fit() method.
 
-        Returns:
-        Ndarray of size (num_samples, n_clusters) (the distance to each cluster
-        center from each sample).
+        Returns
+        -------
+        transformed : ndarray
+            ndarray of shape (n, self.m*self.n). The Euclidean distance
+            from each item in X to each cluster center.
         """
         # Fit to data
         self.fit(X, **kwargs)
@@ -223,39 +285,3 @@ class SOM():
         if self._n_iter_ is None:
             raise AttributeError('SOM does not have n_iter_ attribute until after calling fit()')
         return self._n_iter_
-
-import sklearn
-from sklearn.cluster import KMeans
-from sklearn import datasets
-iris = datasets.load_iris()
-iris_data = iris.data
-
-som = SOM(m=3, n=1, dim=4)
-
-som.fit(iris_data)
-
-centers = som.transform(iris_data)
-
-som.cluster_centers_
-
-t = iris_data[0]
-centers[0]
-c1, c2, c3 = som.cluster_centers_.squeeze(1)
-c1
-np.linalg.norm(t - c1)
-np.linalg.norm(t - c2)
-np.linalg.norm(t - c3)
-
-som = SOM(m=3, n=1, dim=4)
-preds = som.fit_predict(iris_data)
-preds
-preds.shape
-irirs_label = iris.target
-diff = np.where(irirs_label == preds, np.ones_like(preds), np.zeros_like(preds))
-diff.mean()
-
-som = SOM(m=3, n=1, dim=4)
-transformed = som.fit_transform(iris_data)
-transformed.shape
-transformed[0]
-som.cluster_centers_[0]

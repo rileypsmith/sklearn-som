@@ -9,7 +9,7 @@ There are already a handful of useful SOM packages available in your machine lea
 ### How to use
 Using sklearn-som couldn't be easier. First, import the SOM class from the som.som module:
 ```python
-from som.som import SOM
+from sklearn_som.som import SOM
 ```
 Now you will have to create an instance of SOM to cluster data, but first let's get some data. For this part we will use sklearn's Iris Dataset, but you do not need sklearn to use SOM. If you have data from another source, you will not need it. But we are going to use it, so let's grab it. We will also use only the first two features so our results are easier to visualize:
 ```python
@@ -33,4 +33,4 @@ predictions = iris_som.predict(iris_data)
 And let's take a look at how we did:
 ![Iris Data Results](https://github.com/rileypsmith/sklearn-som/blob/main/example/iris_example.png)
 
-Not bad! For the full example code, including the code to reproduce that plot, see `example/example.py`.
+Not bad! For the full example code, including the code to reproduce that plot, see `example/example.py` at [https://github.com/rileypsmith/sklearn-som](https://github.com/rileypsmith/sklearn-som).

@@ -23,7 +23,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
     ],
-    packages=["som"],
+    packages=["sklearn_som"],
     include_package_data=True,
     install_requires=["numpy"],
 )
