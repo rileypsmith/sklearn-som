@@ -32,6 +32,16 @@ predictions = iris_som.predict(iris_data)
 ```
 And let's take a look at how we did:
 
-![Iris Data Results](https://github.com/rileypsmith/sklearn-som/blob/main/example/iris_example.png)
+![Iris Data Results](https://raw.githubusercontent.com/rileypsmith/sklearn-som/main/example/iris_example.png)
 
 Not bad! For the full example code, including the code to reproduce that plot, see `example/example.py` at [https://github.com/rileypsmith/sklearn-som](https://github.com/rileypsmith/sklearn-som).
+
+### Documentation
+
+For full documentation, visit the project page on [ReadTheDocs](https://sklearn-som.readthedocs.io/en/latest/).
+
+### Contributing
+
+If you would like to contribute to sklearn-som, feel free to drop me a line or just submit a pull request and I'll take a look. Ideas for future expansion include adding the ability to make higher dimensional self-organizing maps and to use a hexagonal grid rather than a rectangular one. I may get to those expansions at some point.
+
+Also, if you find a bug, please open an issue on GitHub!!
