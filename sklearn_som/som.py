@@ -132,7 +132,7 @@ class SOM():
         """
         # Count total number of iterations
         global_iter_counter = 0
-        n_samples = data.shape[0]
+        n_samples = X.shape[0]
         total_iterations = np.minimum(epochs * n_samples, self.max_iter)
 
         for epoch in range(epochs):
@@ -150,7 +150,7 @@ class SOM():
                 # Break if past max number of iterations
                 if global_iter_counter > self.max_iter:
                     break
-                input = data[idx]
+                input = X[idx]
                 # Do one step of training
                 self.step(input)
                 # Update learning rate
@@ -158,7 +158,7 @@ class SOM():
                 self.lr = (1 - (global_iter_counter / total_iterations)) * self.initial_lr
 
         # Compute inertia
-        inertia = np.sum(np.array([float(self._compute_point_intertia(x)) for x in data]))
+        inertia = np.sum(np.array([float(self._compute_point_intertia(x)) for x in X]))
         self._inertia_ = inertia
 
         # Set n_iter_ attribute
