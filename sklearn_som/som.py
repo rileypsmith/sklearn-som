@@ -12,7 +12,8 @@ class SOM():
     """
     The 2-D, rectangular grid self-organizing map class using Numpy.
     """
-    def __init__(self, m=3, n=3, dim=3, lr=1, sigma=1, max_iter=3000):
+    def __init__(self, m=3, n=3, dim=3, lr=1, sigma=1, max_iter=3000,
+                    random_state=None):
         """
         Parameters
         ----------
@@ -31,6 +32,11 @@ class SOM():
         max_iter : int, optional
             Optional parameter to stop training if you reach this many
             interation.
+        random_state : int, optional
+            Optional integer seed to the random number generator for weight
+            initialization. This will be used to create a new instance of Numpy's
+            default random number generator (it will not call np.random.seed()).
+            Specify an integer for deterministic results.
         """
         # Initialize descriptive features of SOM
         self.m = m
@@ -43,7 +49,9 @@ class SOM():
         self.max_iter = max_iter
 
         # Initialize weights
-        self.weights = np.random.normal(size=(m * n, dim))
+        self.random_state = random_state
+        rng = np.random.default_rng(random_state)
+        self.weights = rng.normal(size=(m * n, dim))
         self._locations = self._get_locations(m, n)
 
         # Set after fitting
@@ -141,7 +149,8 @@ class SOM():
                 break
 
             if shuffle:
-                indices = np.random.permutation(n_samples)
+                rng = np.random.default_rng(self.random_state)
+                indices = rng.permutation(n_samples)
             else:
                 indices = np.arange(n_samples)
 

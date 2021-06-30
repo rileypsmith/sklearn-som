@@ -7,7 +7,7 @@ sklearn-som is a minimalist, simple implementation of a Kohonen self organizing 
 There are already a handful of useful SOM packages available in your machine learning framework of choice. So why make another one? Well, sklearn-som, as the name suggests, is written to interface just like a clustering method you would find in Scikit Learn. It has the advantage of only having one dependency (numpy) and if you are already familiar with Scikit Learn's machine learning API, you will find it easy to get right up to speed with sklearn-som.
 
 ### How to use
-Using sklearn-som couldn't be easier. First, import the SOM class from the som.som module:
+Using sklearn-som couldn't be easier. First, import the SOM class from the sklearn_som.som module:
 ```python
 from sklearn_som.som import SOM
 ```

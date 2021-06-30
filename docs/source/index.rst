@@ -35,6 +35,11 @@ Master Documentation
     **max_iter : int**, optional
         Optional parameter to stop training if you reach this many
         interation.
+    **random_state : int**, optional
+        Optional integer seed to the random number generator for weight
+        initialization. This will be used to create a new instance of Numpy's
+        default random number generator (it will not call np.random.seed()).
+        Specify an integer for deterministic results.
 
     |
 

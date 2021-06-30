@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from sklearn import datasets
 
-from som.som import SOM
+from sklearn_som.som import SOM
 
 # Load iris data
 iris = datasets.load_iris()
@@ -23,7 +23,7 @@ iris_label = iris.target
 iris_data = iris_data[:, :2]
 
 # Build a 3x1 SOM (3 clusters)
-som = SOM(m=3, n=1, dim=2)
+som = SOM(m=3, n=1, dim=2, random_state=1234)
 
 # Fit it to the data
 som.fit(iris_data)

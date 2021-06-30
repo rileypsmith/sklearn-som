@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="sklearn-som",
-    version="1.0.1",
+    version="1.1.0",
     description="A simple planar self organizing map",
     long_description=README,
     long_description_content_type="text/markdown",
