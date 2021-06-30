@@ -1,4 +1,4 @@
-sklearn-som v. 1.0.1
+sklearn-som v. 1.1.0
 ====================
 
 .. toctree::
