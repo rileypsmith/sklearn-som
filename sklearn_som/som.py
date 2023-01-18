@@ -1,19 +1,26 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Jan 14 21:05:17 2023
+
+@author: Russell.Rogers
+"""
+
 """
 Script to implement simple self organizing map using PyTorch, with methods
 similar to clustering method in sklearn.
-
 @author: Riley Smith
 Created: 1-27-21
 """
 
 import numpy as np
+import scipy.spatial.distance as dist
 
 class SOM():
     """
     The 2-D, rectangular grid self-organizing map class using Numpy.
     """
     def __init__(self, m=3, n=3, dim=3, lr=1, sigma=1, max_iter=3000,
-                    random_state=None):
+                    random_state=None, mode='euclidian'):
         """
         Parameters
         ----------
@@ -47,7 +54,7 @@ class SOM():
         self.lr = lr
         self.sigma = sigma
         self.max_iter = max_iter
-
+        self.mode = mode
         # Initialize weights
         self.random_state = random_state
         rng = np.random.default_rng(random_state)
@@ -69,11 +76,43 @@ class SOM():
         """
         Find the index of the best matching unit for the input vector x.
         """
-        # Stack x to have one row per weight
-        x_stack = np.stack([x]*(self.m*self.n), axis=0)
-        # Calculate distance between x and each weight
-        distance = np.linalg.norm(x_stack - self.weights, axis=1)
-        # Find index of best matching unit
+        if self.mode == 'euclidian':
+            # Stack x to have one row per weight, or create array from value/array x with same shape as the SOM map
+            x_stack = np.stack([x]*(self.m*self.n), axis=0)
+            #print(x_stack.shape)
+            # Calculate distance between x and each weight
+            distance = np.linalg.norm(x_stack - self.weights, axis=1)
+            #print(distance.shape)
+            #print(np.argmin(distance))
+            # Find index of best matching unit
+        
+        elif self.mode == 'spectral':
+            distance = np.zeros((self.weights.shape[0]))
+            for node in range(self.weights.shape[0]):
+                a = np.linalg.norm(x)
+                b = np.linalg.norm(self.weights[node])
+                c = np.multiply(b, a,)
+                d = np.dot(self.weights[node], x)
+                e = np.divide(d, c)
+                f = np.arccos(e)
+                distance[node] = f
+            
+            
+
+        elif self.mode == "mahalanobis":
+            distance = np.zeros((self.weights.shape[0]))
+            for node in range(self.weights.shape[0]):
+                som_node = self.weights[node]
+                cov = np.cov(np.stack((x, som_node), axis=0), rowvar=False)
+                cov_pinv = np.linalg.pinv(cov)  # pseudo-inverse
+                distance[node] = dist.mahalanobis(x, som_node, cov_pinv)
+        
+        
+        elif self.mode == "manhattan":
+            distance = np.zeros((self.weights.shape[0]))
+            for node in range(self.weights.shape[0]):
+                distance[node] = dist.cityblock(self.weights[node], x)
+        
         return np.argmin(distance)
 
     def step(self, x):
@@ -85,10 +124,12 @@ class SOM():
 
         # Get index of best matching unit
         bmu_index = self._find_bmu(x)
+        #print(bmu_index)
 
         # Find location of best matching unit
-        bmu_location = self._locations[bmu_index,:]
-
+        bmu_location = self._locations[bmu_index,:] 
+        
+        #print(bmu_location)
         # Find square distance from each weight to the BMU
         stacked_bmu = np.stack([bmu_location]*(self.m*self.n), axis=0)
         bmu_distance = np.sum(np.power(self._locations.astype(np.float64) - stacked_bmu.astype(np.float64), 2), axis=1)
@@ -121,7 +162,6 @@ class SOM():
         """
         Take data (a tensor of type float64) as input and fit the SOM to that
         data for the specified number of epochs.
-
         Parameters
         ----------
         X : ndarray
@@ -132,7 +172,6 @@ class SOM():
         shuffle : bool, default True
             Whether or not to randomize the order of train data when fitting.
             Can be seeded with np.random.seed() prior to calling fit.
-
         Returns
         -------
         None
@@ -181,13 +220,11 @@ class SOM():
     def predict(self, X):
         """
         Predict cluster for each element in X.
-
         Parameters
         ----------
         X : ndarray
             An ndarray of shape (n, self.dim) where n is the number of samples.
             The data to predict clusters for.
-
         Returns
         -------
         labels : ndarray
@@ -208,13 +245,11 @@ class SOM():
     def transform(self, X):
         """
         Transform the data X into cluster distance space.
-
         Parameters
         ----------
         X : ndarray
             Data of shape (n, self.dim) where n is the number of samples. The
             data to transform.
-
         Returns
         -------
         transformed : ndarray
@@ -234,14 +269,12 @@ class SOM():
     def fit_predict(self, X, **kwargs):
         """
         Convenience method for calling fit(X) followed by predict(X).
-
         Parameters
         ----------
         X : ndarray
             Data of shape (n, self.dim). The data to fit and then predict.
         **kwargs
             Optional keyword arguments for the .fit() method.
-
         Returns
         -------
         labels : ndarray
@@ -259,14 +292,12 @@ class SOM():
         Convenience method for calling fit(X) followed by transform(X). Unlike
         in sklearn, this is not implemented more efficiently (the efficiency is
         the same as calling fit(X) directly followed by transform(X)).
-
         Parameters
         ----------
         X : ndarray
             Data of shape (n, self.dim) where n is the number of samples.
         **kwargs
             Optional keyword arguments for the .fit() method.
-
         Returns
         -------
         transformed : ndarray
